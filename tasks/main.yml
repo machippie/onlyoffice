@@ -1,0 +1,31 @@
+# Standards: 0.1
+---
+- name: Fact onlyoffice user
+  set_fact:
+    onlyoffice_user: "{{ onlyoffice_user | default(homebrew_user) | default(ansible_user_id) }}"
+  tags:
+    - onlyoffice
+
+- become: "{{ (onlyoffice_user != ansible_user_id) | bool }}"
+  become_user: "{{ onlyoffice_user }}"
+  block:
+    - name: Install required package
+      ignore_errors: True
+      homebrew_cask:
+        name: onlyoffice
+        greedy: True
+        options: appdir=/Applications
+        accept_external_apps: False
+        state: upgraded
+      tags:
+        - onlyoffice
+
+- name: Remove quarantine flag
+  register: onlyoffice_quarantine
+  failed_when: onlyoffice_quarantine.rc != 0 and "No such xattr" not in onlyoffice_quarantine.stderr
+  changed_when: onlyoffice_quarantine.rc == 0
+  command: xattr -d com.apple.quarantine /Applications/ONLYOFFICE.app
+  tags:
+    - onlyoffice
+
+...

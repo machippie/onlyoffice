@@ -1,0 +1,10 @@
+# Standards: 0.1
+---
+# @var onlyoffice_user:description: User to run user-specific commands
+# @var onlyoffice_user:value: onlyoffice_user | default(homebrew_user) | default(ansible_user_id)
+# onlyoffice_user:
+
+# @var onlyoffice_started:description: Start in background after install
+onlyoffice_started: True
+
+...

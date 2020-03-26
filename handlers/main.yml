@@ -1,0 +1,16 @@
+# Standards: 0.1
+---
+- name: Kill onlyoffice
+  command: killall ONLYOFFICE
+  register: onlyoffice_kill
+  failed_when: onlyoffice_kill.rc != 0 and "No matching processes belonging to you were found" not in onlyoffice_kill.stderr
+  become: "{{ (onlyoffice_user != ansible_user_id) | bool }}"
+  become_user: "{{ onlyoffice_user }}"
+
+- name: Start onlyoffice
+  when: onlyoffice_started
+  command: open -g /Applications/ONLYOFFICE.app
+  become: "{{ (onlyoffice_user != ansible_user_id) | bool }}"
+  become_user: "{{ onlyoffice_user }}"
+
+...
